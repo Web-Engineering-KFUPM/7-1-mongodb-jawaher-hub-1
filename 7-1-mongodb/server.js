@@ -117,7 +117,6 @@
  *  - write your database username in place of HasanDB in the connection string.
  *  - write your database password in place of <db_password> in the connection string.
  *  - Run server: node server.js to test connection.
- * 
  * =====================================================
  * TODO-2 Define the schema of the DB
  * ===================================================== 
@@ -183,22 +182,48 @@
  *    User → users
  *  This is the default behavior of Mongoose.
  */
-
+import dns from 'node:dns';
+dns.setServers(['8.8.8.8', '1.1.1.1']);
 // import mongoose
-
+import mongoose from "mongoose";
 // establish connection
-
-
+mongoose.connect("mongodb+srv://jawaher:jawaher123@cluster0.q47kvng.mongodb.net/TestDB")
+  .then(() => console.log("Connected"))
+  .catch(err => console.log(err));
 // define schema
-
-
+const studentSchema = new mongoose.Schema({
+         name: String,
+         age: Number,
+         major: String
+      });
+      const Student = mongoose.model("Student", studentSchema);
 // create document
-
+async function createStudents() {
+      await Student.insertMany([
+         { name: "Ali", age: 21, major: "CS" },
+         { name: "Sara", age: 23, major: "SE" }
+      ]);
+      console.log("✅ Inserted");
+      }
+      createStudents();
 
 // read document
-
+async function readStudents() {
+         const all = await Student.find();
+         console.log(all);
+      }
+      readStudents();
 
 // update document
-
+async function updateStudent() {
+         await Student.updateOne({ name: "Ali" }, { age: 22 });
+         console.log("✅ Updated Ali");
+      }
+      updateStudent();
 
 // delete document
+async function deleteStudent() {
+         await Student.deleteOne({ name: "Sara" });
+      console.log("✅ Deleted Sara");
+      }
+      deleteStudent();
